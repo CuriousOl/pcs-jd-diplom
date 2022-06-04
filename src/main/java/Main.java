@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        BooleanSearchEngine engine = new BooleanSearchEngine(new File("pcs-jd-diplom/pdfs"));
+        BooleanSearchEngine engine = new BooleanSearchEngine(new File("pdfs"));
         //тесты
 //        System.out.println(engine.search("бизнес"));
 //        System.out.println(engine.search("skills"));
@@ -21,11 +21,9 @@ public class Main {
                         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                         PrintWriter out = new PrintWriter(socket.getOutputStream())
                 ) {
-                    // обработка одного подключения
-                    out.println("Пожалуйста, введите искомое слово и нажмите Enter");
                     final String word = in.readLine();
                     List<PageEntry> response = engine.search(word);
-                    System.out.println(listToJson(response));
+                    out.println(listToJson(response));
                 }
             }
         } catch (IOException e) {

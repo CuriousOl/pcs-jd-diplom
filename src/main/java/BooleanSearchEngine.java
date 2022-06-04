@@ -5,10 +5,9 @@ import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class BooleanSearchEngine implements SearchEngine {
-    Map<String, List<PageEntry>> results = new TreeMap<>();
+    private Map<String, List<PageEntry>> results = new TreeMap<>();
 
     public BooleanSearchEngine(File pdfsDir) throws IOException {
 
@@ -38,8 +37,10 @@ public class BooleanSearchEngine implements SearchEngine {
                 for (String key : freqs.keySet()) {
                     if (results.containsKey(key)) {
                         List<PageEntry> list = new ArrayList<>(results.get(key));
-//                        list = results.get(key);
                         list.add(new PageEntry(pdf.getName(), numberPage, freqs.get(key)));
+                        list.sort((o1, o2) -> {
+                            return Integer.compare(o2.getCount(), o1.getCount());
+                        });
                         results.replace(key, list);
                     } else {
                         results.put(key, List.of(new PageEntry(pdf.getName(), numberPage, freqs.get(key))));
@@ -47,7 +48,6 @@ public class BooleanSearchEngine implements SearchEngine {
                 }
             }
         }
-
     }
 
     public Map<String, Integer> wordsFrequency(String[] words) {
@@ -62,12 +62,17 @@ public class BooleanSearchEngine implements SearchEngine {
     }
 
     public List<PageEntry> search(String word) {
-
         if (!results.containsKey(word)) {
             return Collections.emptyList();
         }
-        return results.get(word).stream()
-                .sorted()
-                .collect(Collectors.toList());
+        return results.get(word);
+    }
+
+    public Map<String, List<PageEntry>> getResults() {
+        return results;
+    }
+
+    public void setResults(Map<String, List<PageEntry>> results) {
+        this.results = results;
     }
 }
