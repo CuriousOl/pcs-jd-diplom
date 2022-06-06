@@ -62,7 +62,7 @@ public class BooleanSearchEngine implements SearchEngine {
     }
 
     public List<PageEntry> search(String word) {
-        if (!results.containsKey(word)) {
+        if (!results.containsKey(word.toLowerCase())) {
             return Collections.emptyList();
         }
         return results.get(word);
